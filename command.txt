@@ -1,0 +1,7 @@
+FOR LINUX (yes i like linux)
+
+run:
+sudo apt update && sudo apt install unzip gawk xargs curl -y
+
+then:
+curl -s "http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m.csv.zip" | funzip | awk -F, '{print $2}' | grep -E '(stf|adm|pnl|admin|login|portal|panel|staff|manage)' | xargs -I {} -P 50 sh -c 'curl -s -o /dev/null -w "%{http_code} %{url_effective}\n" --connect-timeout 5 "http://{}"' | awk '$1=="200" {print $2}' >> found_domains.txt
